@@ -1,7 +1,7 @@
 const Product = require('../models/Products');
 const ErrorResponse = require('../utils/errorResponse');
 const catchAsyncError = require('../middleware/catchAsyncError');
-
+const ApiFeatures = require('../utils/apiFeatures');
 //Create product
 // exports.createProduct = async (req, res, next) => {
 //   try {
@@ -18,7 +18,7 @@ const catchAsyncError = require('../middleware/catchAsyncError');
 exports.createProduct = catchAsyncError(async (req, res, next) => {
   const createproduct = await Product.create(req.body);
   res.status(201).json({
-    status: 'success',
+    status: true,
     data: createproduct,
   });
 });
@@ -37,19 +37,21 @@ exports.createProduct = catchAsyncError(async (req, res, next) => {
 // };
 
 exports.getAllProducts = catchAsyncError(async (req, res, next) => {
-  const products = await Product.find();
+  const apiFeatures = new ApiFeatures(Product.find(), req.query).search();
+  // const products = await Product.find();
+  const products = await apiFeatures.query;
   res.status(200).json({
-    status: 'success',
+    status: true,
     data: products,
   });
-})
+});
 
 //get a product
 exports.getProduct = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
     res.status(200).json({
-      status: 'success',
+      status: true,
       data: product,
     });
   } catch (err) {
@@ -69,7 +71,7 @@ exports.updateProduct = async (req, res) => {
       }
     );
     res.status(200).json({
-      status: 'success',
+      status: true,
       data: updateproduct,
     });
   } catch (err) {
@@ -82,7 +84,7 @@ exports.deleteProduct = async (req, res) => {
   try {
     const deleteproduct = await Product.findByIdAndDelete(req.params.id);
     res.status(204).json({
-      status: 'success',
+      status: true,
       data: deleteproduct,
     });
   } catch (err) {
