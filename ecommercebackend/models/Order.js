@@ -106,3 +106,7 @@ const orderSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('Order', orderSchema);
+
+
+// Print the following series 
+//        1 4 9 16 25 36 to n. Note print all the numbers in a seperate line*/

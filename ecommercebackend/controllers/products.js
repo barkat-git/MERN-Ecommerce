@@ -36,28 +36,44 @@ exports.createProduct = catchAsyncError(async (req, res, next) => {
 //   }
 // };
 
-exports.getAllProducts = catchAsyncError(async (req, res, next) => {
-  const apiFeatures = new ApiFeatures(Product.find(), req.query).search();
-  // const products = await Product.find();
-  const products = await apiFeatures.query;
+exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
+  const resultPerPage = 20;
+  const productsCount = await Product.countDocuments();
+
+  const apiFeature = new ApiFeatures(Product.find(), req.query)
+    .search()
+    .filter();
+
+  let products = await apiFeature.query;
+
+  let filteredProductsCount = products.length;
+
+  apiFeature.pagination(resultPerPage);
+
+  products = await apiFeature.query;
+
   res.status(200).json({
-    status: true,
+    success: true,
     data: products,
+    productsCount,
+    resultPerPage,
+    filteredProductsCount,
   });
 });
 
 //get a product
-exports.getProduct = async (req, res, next) => {
-  try {
-    const product = await Product.findById(req.params.id);
-    res.status(200).json({
-      status: true,
-      data: product,
-    });
-  } catch (err) {
-    return next(new ErrorResponse(`Failed to get product`, 400));
+exports.getProduct = catchAsyncErrors(async (req, res, next) => {
+  const product = await Product.findById(req.params.id);
+
+  if (!product) {
+    return next(new ErrorHander('Product not found', 404));
   }
-};
+
+  res.status(200).json({
+    success: true,
+    data: product,
+  });
+});
 
 //update product
 exports.updateProduct = async (req, res) => {
