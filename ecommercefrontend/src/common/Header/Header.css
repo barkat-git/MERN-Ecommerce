@@ -1,0 +1,16 @@
+button {
+  background-color: #ff1768;
+  color: white;
+  outline-color: #ff1768;
+  display: inline-block;
+  text-align: center;
+  font-size: 28px;
+  padding: 10px;
+  width: 100px;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
